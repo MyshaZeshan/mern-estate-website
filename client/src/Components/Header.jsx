@@ -18,13 +18,13 @@ const Header = () => {
             </form>
             <ul className = "flex gap-4">
                 <Link to="/">
-                    <li className='hidden sm:inline text-blue-900 font-bold hover:underline hover:decoration-yellow-600 hover:decoration-2 hover:underline-offset-4 transition-all duration-300'>Home</li>
+                    <li className='hidden sm:inline text-blue-900  hover:underline hover:decoration-yellow-600 hover:decoration-2 hover:underline-offset-4 transition-all duration-300'>Home</li>
                 </Link>
                 <Link to="/About">
-                    <li className='hidden sm:inline text-blue-900 font-bold hover:underline hover:decoration-yellow-600 hover:decoration-2 hover:underline-offset-4 transition-all duration-300'>About</li>
+                    <li className='hidden sm:inline text-blue-900  hover:underline hover:decoration-yellow-600 hover:decoration-2 hover:underline-offset-4 transition-all duration-300'>About</li>
                 </Link>
                 <Link to="/SignIn">
-                    <li className='text-blue-900 font-bold hover:underline hover:decoration-yellow-600 hover:decoration-2 hover:underline-offset-4 transition-all duration-300'>SignIn</li>
+                    <li className='text-blue-900  hover:underline hover:decoration-yellow-600 hover:decoration-2 hover:underline-offset-4 transition-all duration-300'>SignIn</li>
                 </Link>
             </ul>
         </div>
