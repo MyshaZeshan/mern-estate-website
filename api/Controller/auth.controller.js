@@ -2,6 +2,8 @@ import User from "../Models/User.model.js";
 import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 
+//Location / Title: It lives in autgController.js, so it’s a Controller function.
+//Role / Job: It handles the incoming request for that specific route, so it’s the Route Handler.
 export const signup = async (req,res,next)=>{
 
     const {username,email,password} = req.body;
@@ -9,7 +11,7 @@ export const signup = async (req,res,next)=>{
     const newUser  = new User({username,email,password:hashPassword});
     try{
         await newUser.save();
-        res.status(201).json('user created successfully');
+        res.status(201).json({success: true , msg: 'user created successfully'});
     }
     catch(error){
         next(error);   
