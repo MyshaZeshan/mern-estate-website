@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useRef } from 'react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { updateUserStart,updateUserFailure,updateUserSuccess } from '../redux/user/userSlice'
+import { updateUserStart,updateUserFailure,updateUserSuccess,deleteUserFailure,deleteUserSuccess,deleteUserStart } from '../redux/user/userSlice'
 
 
 
@@ -46,6 +46,23 @@ const Profile = () => {
 
   }
 
+  const handleDeleteUser =  async(e) => {
+    try{
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`,{
+        method : 'DELETE',
+      })
+      const data =await res.json();
+      if(data.success ===  false){
+        dispatch(deleteUserFailure(data.msg));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    }catch(error)
+    {
+      dispatch(deleteUserFailure(error.msg))
+    }
+  }
   return (
     <section  className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-extrabold text-center my-7 text-[rgb(34,34,34)]'>Profile</h1>
@@ -59,7 +76,7 @@ const Profile = () => {
         <button  disabled={loading} className='text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-3 border rounded-lg w-full hover:opacity-95 disabled:opacity-80'>{loading ? 'loading...' : 'UPDATE'}</button>
       </form>
       <div className= "flex justify-between mt-5">
-        <span className='text-red-500 cursor-pointer hover:underline '>Delete Account</span>
+        <span onClick={handleDeleteUser} className='text-red-500 cursor-pointer hover:underline '>Delete Account</span>
         <span className='text-red-500 cursor-pointer hover:underline'>Sign Out</span>
       </div>
       {error && <p className='text-red-700 mt-5'>{error}</p>}
