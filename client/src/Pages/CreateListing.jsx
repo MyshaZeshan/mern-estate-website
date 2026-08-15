@@ -1,6 +1,56 @@
-import React from 'react'
+import { useState } from 'react'
+import { supabase } from '../supabase/supabaseClient'
 
 const CreateListing = () => {
+    const [files, setfiles] =  useState([])
+    const [formdata,setformdata] = useState({
+        imageUrls:[],
+    });
+    const [imageuploaderror,setimageuploaderror] = useState(false);
+    console.log(formdata);
+    const handleImages = async(e) =>{
+       
+       if(files.length>0 && files.length + formdata.imageUrls.length <7){
+            const promises = [];
+            for(let i=0; i<files.length;i++){
+                promises.push(storeImage(files[i]));
+            }
+            try {
+        // 1. Wait for all background image uploads to finish successfully
+            const urls = await Promise.all(promises);
+            setformdata((prev)=>({
+                ...prev,
+                imageUrls: [...prev.imageUrls,...urls]
+            }));
+            // 2. TODO: Call your existing state function here to update form data 
+            // e.g., setFormData({ ...formData, imageUrls: urls });
+            setimageuploaderror(false);
+            } catch (error) {
+                setimageuploaderror('image upload failed')
+            }
+        }else{
+            setimageuploaderror('cant upload more than 6 images')
+        }
+    }
+    const storeImage = async (file)=>{
+        return new Promise(async(resolve, reject)=>{
+            const fileName = `${Date.now()}-${file.name}`;
+            const {data,error} = await supabase.storage.from('images').upload(fileName,file);
+            if(error){
+                reject(error);
+            }else{
+                const {data: {publicUrl}} = supabase.storage.from('images').getPublicUrl(fileName);
+                resolve(publicUrl);
+            }
+        });
+    };
+
+    const handleremoveimage=(index)=>{
+        setformdata({
+            ...formdata,
+            imageUrls:formdata.imageUrls.filter((_,i)=>i!==index),
+        });
+    }
   return (
     <main className='p-3 max-w-4xl mx-auto '>
         <h1 className='text-3xl font-extrabold text-center my-7'>Create a Listing</h1>
@@ -60,11 +110,19 @@ const CreateListing = () => {
             <div className='flex flex-col flex-1 gap-4 ml-3'>
                 <p className='font-semibold'>Images:<span className='font-normal text-gray-700 ml-2'>The first image will be the cover (max 6)</span></p>
                 <div className='flex gap-4 justify-center'>
-                    <input className='border p-2 border-gray-400 rounded w-full' type='file' id='images' accept='image/*'/>
-                    <button className='text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-2 border rounded-lg  hover:opacity-95 disabled:opacity-80'>Upload</button>
+                    <input  multiple onChange={(e)=>setfiles(e.target.files)} className='border p-2 border-gray-400 rounded w-full' type='file' id='images' accept='image/*'/>
+                    <button type='button' onClick={handleImages} className='text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-2 border rounded-lg  hover:opacity-95 disabled:opacity-80'>Upload</button>
                 </div>
+                 <p className='text-red-700 text-sm'>{imageuploaderror && imageuploaderror }</p>
+                 {formdata.imageUrls.length>0 && formdata.imageUrls.map((url,index)=>(
+                    <div key={url || index} className='flex justify-between p-3 border border-[rgb(255,109,31)] rounded-lg items-center '>
+                        <img src={url} alt="listing image" className='w-20 h-20 object-contain rounded-lg' />
+                        <button onClick={()=>handleremoveimage(index)}>Delete</button>
+                    </div>
+                 ))}
                 <button  className='text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-2 border rounded-lg  hover:opacity-95 disabled:opacity-80 uppercase w-full'> Create Listing</button>
             </div>
+           
         </form>
     </main>
   )
