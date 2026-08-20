@@ -8,13 +8,14 @@ import { updateUserStart,updateUserFailure,updateUserSuccess,deleteUserFailure,d
 import {Link} from 'react-router-dom'
 
 
-
 const Profile = () => {
   const fileRef = useRef(null);
   const {currentUser,loading,error} = useSelector((state)=>state.user)
   const [formdata,setformdata] = useState({});
   const dispatch = useDispatch();
   const [updateSuccess,setUpdateSuccess] = useState(false);
+  const [showerror,setshowerror] = useState(false);
+  const [userlisting,setuserlisting] = useState([]);
   
   const handleChange = (e) =>{
       setformdata({
@@ -66,7 +67,7 @@ const Profile = () => {
     }
   }
 
-  const handleSignOut = async () =>{
+  const handleSignOut = async (e) =>{
 
     try{
       dispatch(signoutStart());
@@ -84,6 +85,25 @@ const Profile = () => {
       dispatch(signOutFailure(error.msg));
     }
   }
+  const handleShow = async() => {
+      try{
+        setshowerror(false);
+        const res = await fetch (`/api/user/listings/${currentUser._id}`,{
+          method:'GET',
+        })
+        const data = await res.json();
+        if(data.success===false)
+        {
+          setshowerror(true);
+          return;
+        }
+        setuserlisting(data);
+        
+      }catch(error){
+        setshowerror(true);
+      }
+  }
+  
   return (
     <section  className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-extrabold text-center my-7 text-[rgb(34,34,34)]'>Profile</h1>
@@ -103,6 +123,33 @@ const Profile = () => {
       </div>
       {error && <p className='text-red-700 mt-5'>{error}</p>}
       <p className='text-green-500'>{updateSuccess ? 'User is updated successfully!' : ''}</p>
+      <div className='flex justify-center'>
+          <button onClick={handleShow} className='uppercase text-center text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-3 border rounded-lg hover:opacity-95 disabled:opacity-80'>show listing's</button>
+      </div>
+
+      {showerror && <p className='text-red-700 mt-5'>{showerror}</p>}
+      {userlisting && userlisting.length>0 && 
+      
+      <div className='flex flex-col '>
+          <h1 className='font-bold text-center my-7 text-2xl' >Your Listing's</h1>
+          {userlisting.map((listing)=>(
+        <div key={listing._id} className=' bg-[rgb(250,243,225)] flex border rounded-lg p-3 justify-between items-center m-1 gap-4'>
+          <Link to = {`/listing/${listing._id}`}>
+            <img src={listing.imageURL[0]} alt="image" className='h-16 w-16 object-contain rounded-lg' />
+          </Link>
+          <Link className='flex-1' to={`/listing/${listing._id}`}>
+          <p className='text-black font-semibold hover:underline truncate'>
+              {listing.name}
+          </p>
+          </Link>
+          <div className='flex flex-col gap-1'>
+              <button className='uppercase text-center text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-2 border rounded-lg hover:opacity-95 disabled:opacity-80'>edit</button>
+              <button className='uppercase text-center text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-2 border rounded-lg hover:opacity-95 disabled:opacity-80'>delete</button>
+          </div>
+        </div>
+      ))}
+      </div>}
+      
     </section>
   )
 }

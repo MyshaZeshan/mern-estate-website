@@ -13,7 +13,7 @@ const CreateListing = () => {
     
 
     const [formdata,setformdata] = useState({
-        imageUrls:[],
+        imageURL:[],
         name:'',
         description:'',
         address:'',
@@ -31,7 +31,7 @@ const CreateListing = () => {
     console.log(formdata);
     const handleImages = async(e) =>{
        
-       if(files.length>0 && files.length + formdata.imageUrls.length <7){
+       if(files.length>0 && files.length + formdata.imageURL.length <7){
             const promises = [];
             for(let i=0; i<files.length;i++){
                 promises.push(storeImage(files[i]));
@@ -41,7 +41,7 @@ const CreateListing = () => {
             const urls = await Promise.all(promises);
             setformdata((prev)=>({
                 ...prev,
-                imageUrls: [...prev.imageUrls,...urls]
+                imageURL: [...prev.imageURL,...urls]
             }));
             // 2. TODO: Call your existing state function here to update form data 
             // e.g., setFormData({ ...formData, imageUrls: urls });
@@ -69,7 +69,7 @@ const CreateListing = () => {
     const handleremoveimage=(index)=>{
         setformdata({
             ...formdata,
-            imageUrls:formdata.imageUrls.filter((_,i)=>i!==index),
+            imageURL:formdata.imageURL.filter((_,i)=>i!==index),
         });
     }
     const handleChange=(e)=>{
@@ -95,7 +95,7 @@ const CreateListing = () => {
     const handleSubmit=async(e)=>{
         e.preventDefault();
         try{
-            if(formdata.imageUrls.length<1){
+            if(formdata.imageURL.length<1){
                 return seterror('You must upload atleast one image')
             }
             setloading(true);
@@ -185,7 +185,7 @@ const CreateListing = () => {
                     <button type='button' onClick={handleImages} className='text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-2 border rounded-lg  hover:opacity-95 disabled:opacity-80'>Upload</button>
                 </div>
                  <p className='text-red-700 text-sm'>{imageuploaderror && imageuploaderror }</p>
-                 {formdata.imageUrls.length>0 && formdata.imageUrls.map((url,index)=>(
+                 {formdata.imageURL.length>0 && formdata.imageURL.map((url,index)=>(
                     <div key={url || index} className='flex justify-between p-3 border border-[rgb(255,109,31)] rounded-lg items-center '>
                         <img src={url} alt="listing image" className='w-20 h-20 object-contain rounded-lg' />
                         <button onClick={()=>handleremoveimage(index)}>Delete</button>
