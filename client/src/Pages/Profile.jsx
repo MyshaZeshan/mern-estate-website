@@ -103,7 +103,22 @@ const Profile = () => {
         setshowerror(true);
       }
   }
-  
+  const handlelistingdelete = async (listingid) =>{
+    try {
+        const res = await fetch(`/api/listing/delete/${listingid}`,{
+          method:'DELETE'
+        })
+        const data = await res.json();
+        if(data.success===false)
+        {
+          console.log(error.message)
+          return;
+        }
+        setuserlisting((prev)=>prev.filter((listing)=>(listing._id) !== listingid))
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
   return (
     <section  className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-extrabold text-center my-7 text-[rgb(34,34,34)]'>Profile</h1>
@@ -144,7 +159,7 @@ const Profile = () => {
           </Link>
           <div className='flex flex-col gap-1'>
               <button className='uppercase text-center text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-2 border rounded-lg hover:opacity-95 disabled:opacity-80'>edit</button>
-              <button className='uppercase text-center text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-2 border rounded-lg hover:opacity-95 disabled:opacity-80'>delete</button>
+              <button onClick={()=>handlelistingdelete(listing._id)} className='uppercase text-center text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-2 border rounded-lg hover:opacity-95 disabled:opacity-80'>delete</button>
           </div>
         </div>
       ))}
