@@ -158,7 +158,9 @@ const Profile = () => {
           </p>
           </Link>
           <div className='flex flex-col gap-1'>
-              <button className='uppercase text-center text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-2 border rounded-lg hover:opacity-95 disabled:opacity-80'>edit</button>
+            <Link to ={`/updateListing/${listing._id}`}>
+                 <button className='uppercase text-center text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-2 border rounded-lg hover:opacity-95 disabled:opacity-80'>edit</button>
+            </Link>
               <button onClick={()=>handlelistingdelete(listing._id)} className='uppercase text-center text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-2 border rounded-lg hover:opacity-95 disabled:opacity-80'>delete</button>
           </div>
         </div>
