@@ -6,6 +6,8 @@ import {Swiper, SwiperSlide} from 'swiper/react'
 import SwiperCore from 'swiper';
 import {Navigation} from 'swiper/modules'
 import 'swiper/swiper-bundle.css'
+import { useSelector } from 'react-redux'
+import Contact from '../Components/Contact'
 
 const Listing = () => {
     SwiperCore.use({Navigation})
@@ -13,12 +15,15 @@ const Listing = () => {
     const [loading,setloading] = useState(false);
     const [error,seterror] = useState(false);
     const params = useParams();
+    const [contact,setcontact] = useState(false);
+    const {currentUser} = useSelector((state)=>state.user)
+    
     useEffect(()=>{
         const fetchListing = async()=>{
             try {
                 setloading(true);
-                const listingId = params.listingId;
-                const res = await fetch (`/api/listing/get/${listingId}`);
+    
+                const res = await fetch (`/api/listing/get/${params.listingId}`);
                 const data = await res.json();
                 if(data.success===false){
                     seterror(true);
@@ -53,9 +58,9 @@ const Listing = () => {
                     </SwiperSlide>
                 ))}
             </Swiper>
-            </div>}
-            <div className='bg-[rgb(250,243,225)]'>
-                <div className="max-w-5xl mx-auto px-6 py-8 ">
+            
+            <div className='bg-[rgb(250,243,225)] p-7'>
+                <div className="max-w-5xl mx-auto px-6 py-8">
 
                     <h1 className="text-3xl font-bold">{listing.name}</h1>
                     <p className="text-gray-700 mt-1">{listing.address}</p>
@@ -100,9 +105,15 @@ const Listing = () => {
                             For {listing.type}
                         </span>
                     </div>
-
                 </div>
+                {currentUser && listing?.userRef!==currentUser._id && !contact && (<div className='flex justify-center w-full'>
+                    <button onClick={()=>setcontact(true)} className='border rounded-lg uppercase text-[rgb(250,243,225)] p-3 mb-7   bg-[rgb(255,109,31)]'>contact landlord</button>
+                </div>)}
+                {contact && <Contact listing={listing}/>}
             </div>
+            </div>}
+
+            
     </main>
   )
 }
