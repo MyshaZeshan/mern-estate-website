@@ -8,7 +8,7 @@ const Contact = ({listing}) => {
     const [error,seterror] = useState(false);
     const [message,setmessage] = useState('');
 
-
+    console.log(listing?.userRef);
     useEffect(()=>{
         const fetchLandlord = async()=>{
             try {
@@ -16,8 +16,8 @@ const Contact = ({listing}) => {
                 const data = await res.json();
                 if(data.success===false){
                     seterror(true);
-                    setloading(false);
                     console.log(data.message);
+                    return
                 }
                 setlandlord(data);
                 seterror(false);
@@ -33,6 +33,7 @@ const Contact = ({listing}) => {
     const onChange = (e)=>{
         setmessage(e.target.value)
     }
+    console.log(landlord)
   return (
     <>
         {landlord && (

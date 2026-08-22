@@ -5,6 +5,7 @@ import { deletelisting } from '../Controller/listing.controller.js';
 import { updatelisting } from '../Controller/listing.controller.js';
 
 
+
 const router = new express.Router();
 
 router.post('/create',verifyToken,createListing);
