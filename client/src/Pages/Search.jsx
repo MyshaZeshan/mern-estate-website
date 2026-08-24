@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
+import ListingCard from '../Components/ListingCard';
 
 const Search = () => {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ const Search = () => {
     })
     const [loading,setloading] = useState(false);
     const [listing,setlisting] = useState([]);
-    console.log(listing);
+
     const handleChange=(e)=>{
         if(e.target.id === 'all' || e.target.id==='rent' || e.target.id==='sale')
         {
@@ -133,8 +134,21 @@ const Search = () => {
                 <button className='uppercase text-center text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-3 border rounded-lg hover:opacity-95 disabled:opacity-80'>Search</button>
             </form>
         </div>
-        <div className='m-7'>
+        <div className='m-7 flex flex-col'>
             <h1 className='text-3xl font-semibold p-3'>Listing Results</h1>
+            <div className='p-7 flex flex-wrap gap-4'>
+                {!loading && listing.length===0 && (
+                    <p className='text-xl'>No Listing Found!</p>
+                )}
+                {
+                    loading && (<p className='text-center'>loading...</p>)
+                }
+                {
+                    !loading && listing && listing.map((listing)=>(
+                        <ListingCard key={listing._id} listing={listing}/>
+                    ))
+                }
+            </div>
         </div>
     </div>
     
