@@ -78,7 +78,7 @@ export const getListingforSearch = async (req,res,next) =>{
         if(type === 'undefined' || type==='all'){
             type = {$in:['sale','rent']} //$in means find all values inside the list
         }
-        const searchTerm = req.query.searchTerm || ''
+        const searchTerm = req.query.search || ''
         const sort = req.query.sort || 'createdAt';
         const order = req.query.order || 'desc';
 
