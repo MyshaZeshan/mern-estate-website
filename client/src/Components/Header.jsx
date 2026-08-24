@@ -18,7 +18,7 @@ const Header = () => {
   }
  
   useEffect(()=>{
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(location.search);
     const urlsearch = urlParams.get('search');
     if(urlsearch){
         setsearch(urlsearch);
