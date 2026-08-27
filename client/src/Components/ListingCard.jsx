@@ -1,7 +1,4 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
-import { FaSearchLocation } from 'react-icons/fa'
-
 const ListingCard = ({listing}) => {
   return (
     <div className='bg-[rgb(250,243,225)] border rounded-lg p-2 shadow-md hover:shadow-lg transition-shadow overflow-hidden gap-4 w-full sm:w-[330px]'>
