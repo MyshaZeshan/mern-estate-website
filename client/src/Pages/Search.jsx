@@ -15,6 +15,7 @@ const Search = () => {
     })
     const [loading,setloading] = useState(false);
     const [listing,setlisting] = useState([]);
+    const [showMore,setshowMore] = useState(false);
 
     const handleChange=(e)=>{
         if(e.target.id === 'all' || e.target.id==='rent' || e.target.id==='sale')
@@ -61,9 +62,16 @@ const Search = () => {
 
         const fetchlisting = async ()=>{
             setloading(true);
+            setshowMore(false);
             const searchQuery = urlParams.toString();
             const res =  await fetch(`/api/listing/get?${searchQuery}`);
             const data = await res.json();
+            if(data.length>8)
+            {
+                setshowMore(true);
+            }else{
+                setshowMore(false);
+            }
             setlisting(data);
             setloading(false);
         }
@@ -82,6 +90,20 @@ const Search = () => {
         urlParams.set('order',sidebardata.order);
         const searchQuery = urlParams.toString();
         navigate(`/search?${searchQuery}`)
+    }
+
+    const onshowmoreclick = async ()=>{
+        const numberOfListing = listing.length;
+        const startIndex = numberOfListing;
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.set('startIndex',startIndex);
+        const searchQuery = urlParams.toString();
+        const res =  await fetch(`/api/listing/get?${searchQuery}`);
+        const data = await res.json();
+        if(data.length<9){
+            setshowMore(false);
+        }
+        setlisting([...listing,...data])
     }
   return (
     <div className='flex flex-col md:flex-row'>
@@ -134,7 +156,7 @@ const Search = () => {
                 <button className='uppercase text-center text-[rgb(250,243,225)] bg-[rgb(255,109,31)] font-extrabold p-3 border rounded-lg hover:opacity-95 disabled:opacity-80'>Search</button>
             </form>
         </div>
-        <div className='m-7 flex flex-col'>
+        <div className='m-7 flex flex-col '>
             <h1 className='text-3xl font-semibold p-3'>Listing Results</h1>
             <div className='p-7 flex flex-wrap gap-4'>
                 {!loading && listing.length===0 && (
@@ -149,6 +171,11 @@ const Search = () => {
                     ))
                 }
             </div>
+            {showMore && (
+                    <button className='hover:underline p-7 font-semibold' onClick={
+                    onshowmoreclick
+                }> Show More
+                </button>)}
         </div>
     </div>
     
