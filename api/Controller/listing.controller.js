@@ -63,19 +63,19 @@ export const getListingforSearch = async (req,res,next) =>{
         const limit = parseInt(req.query.list) || 9;
         const startIndex = parseInt(req.query.startIndex) || 0;
         let offer = req.query.offer;
-        if(offer === 'undefined' || offer==='false'){
+        if(offer === undefined || offer==='false'){
             offer = {$in:[false,true]} //$in means find all values inside the list
         }
         let furnished = req.query.furnished;
-        if(furnished === 'undefined' || furnished==='false'){
+        if(furnished === undefined || furnished==='false'){
             furnished = {$in:[false,true]} //$in means find all values inside the list
         }
         let parking = req.query.parking;
-        if(parking === 'undefined' || parking==='false'){
+        if(parking === undefined || parking==='false'){
             parking = {$in:[false,true]} //$in means find all values inside the list
         }
         let type = req.query.type;
-        if(type === 'undefined' || type==='all'){
+        if(type === undefined || type==='all'){
             type = {$in:['sale','rent']} //$in means find all values inside the list
         }
         const searchTerm = req.query.search || ''
